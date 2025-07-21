@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Sin-Yaw Wang">
+<meta name="description" content="">
+<meta name="title" content="Bidding Examples & Exercises">
+<title>Bidding Examples & Exercises</title>
+<script>"use strict";</script>
+<script src="../refcard2/carddeck.js"></script>
+<script src="../refcard2/board.js"></script>
+<script src="../refcard2/tools.js"></script>
+<script src="../refcard2/enzh.json"></script>
+<script src="../refcard2/baseSAYC.json"></script>
+<script src="../refcard2/config.js"></script>
+<script>
+    var config = new Settings;
+    config.getConfig();
+</script>
+<script src="../refcard2/qref.js"></script>
+<script src="../refcard2/practices.js"></script>
+<script src="../refcard2/statmodules.js"></script>
+<script src="../refcard2/scrub.js"></script>
+<script src="../refcard2/rulecode.js"></script>
+<script src="../refcard2/conventions.js"></script>
+<script src="../refcard2/supplemental.js"></script>
+<script src="../refcard2/nmf.js"></script>
+<script src="bidexamples.js"></script>
+<style>
+.ListDisplay {
+    clear: both;
+    float: left;
+    margin-top: 1vh;
+    margin-left: 3vw;
+    width: 90vw;
+}
+.Label, body {font-family: 'Courier New', Courier, monospace;}
+.PointExamples {
+    display: grid;
+    grid-template-columns: 3em 20em 10em;
+    grid-column-gap: 5px;
+    margin-top: 2vh;
+}
+.Control {float:left;}
+</style>
+</head>
+<body>
+<div id="control" class="Control"></div>
+<div class="ListDisplay" id="ListDisplay"></div>
+<script>
+let divE = document.getElementById('control');
+let l = document.createElement('label');
+l.innerHTML = 'Examples to Generate: '
+l.setAttribute('for', 'SelectExtra')
+divE.appendChild(l)
+let sel = document.createElement('select');
+sel.setAttribute('id', 'SelectExtra');
+divE.appendChild(sel);
+['HCP', 'DP', 'TP', 'LTC', '1S/1H', '1NT', '1D/1C'].forEach(s => {
+    let opt = document.createElement('option');
+    opt.setAttribute('value', s);
+    opt.innerHTML = s;
+    sel.appendChild(opt);
+});
+let e = document.createElement('input');
+e.setAttribute('type', 'button');
+e.setAttribute('value', 'Generate');
+e.setAttribute('onclick', 'bidExamples('+sel.id+')');
+e.style['font-family'] = 'inherit';
+e.style['margin-right'] = '10px';
+divE.appendChild(e)
+
+</script>
+</body>
+</html>
