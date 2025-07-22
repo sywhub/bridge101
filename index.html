@@ -37,9 +37,10 @@
 .Label, body {font-family: 'Courier New', Courier, monospace;}
 .PointExamples {
     display: grid;
-    grid-template-columns: 3em 20em 10em;
-    grid-column-gap: 5px;
+    grid-template-columns: 3vw 20vw 30vw;
+    grid-column-gap: 2vw;
     margin-top: 2vh;
+    margin-left: 5vw;
 }
 .Control {float:left;}
 </style>
@@ -50,13 +51,13 @@
 <script>
 let divE = document.getElementById('control');
 let l = document.createElement('label');
-l.innerHTML = 'Examples to Generate: '
+l.innerHTML = 'Exerciss on: '
 l.setAttribute('for', 'SelectExtra')
 divE.appendChild(l)
 let sel = document.createElement('select');
 sel.setAttribute('id', 'SelectExtra');
 divE.appendChild(sel);
-['HCP', 'DP', 'TP', 'LTC', '1S/1H', '1NT', '1D/1C'].forEach(s => {
+['Made Contracts', 'Overtricks', 'Penalties', 'HCP', 'DP', 'LTC', 'Open'].forEach(s => {
     let opt = document.createElement('option');
     opt.setAttribute('value', s);
     opt.innerHTML = s;
@@ -65,11 +66,10 @@ divE.appendChild(sel);
 let e = document.createElement('input');
 e.setAttribute('type', 'button');
 e.setAttribute('value', 'Generate');
-e.setAttribute('onclick', 'bidExamples('+sel.id+')');
+e.setAttribute('onclick', 'exercies('+sel.id+')');
 e.style['font-family'] = 'inherit';
 e.style['margin-right'] = '10px';
 divE.appendChild(e)
-
 </script>
 </body>
 </html>
