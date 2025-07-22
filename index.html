@@ -25,6 +25,8 @@
 <script src="../refcard2/conventions.js"></script>
 <script src="../refcard2/supplemental.js"></script>
 <script src="../refcard2/nmf.js"></script>
+<script src="exerdriver.js"></script>
+<script src="ptexamples.js"></script>
 <script src="bidexamples.js"></script>
 <style>
 .ListDisplay {
@@ -57,7 +59,7 @@ divE.appendChild(l)
 let sel = document.createElement('select');
 sel.setAttribute('id', 'SelectExtra');
 divE.appendChild(sel);
-['Made Contracts', 'Overtricks', 'Penalties', 'HCP', 'DP', 'LTC', 'Open'].forEach(s => {
+['HCP', 'DP', 'LTC', 'Open'].forEach(s => {
     let opt = document.createElement('option');
     opt.setAttribute('value', s);
     opt.innerHTML = s;
