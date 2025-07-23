@@ -1,3 +1,6 @@
+/*
+ * Generating examples for bidding exercises
+ */
 class BidEx extends Qualifier {
     MenuItems = [
         {'Name': 'Open', 'Cases': [{"BidSeq":[]}]}
@@ -14,11 +17,7 @@ class BidEx extends Qualifier {
         var nExamples = this.nCap;
         var idx = 1;
         while (nExamples > 0) {
-            this.BridgeBoard.deal();
-            var found = null;
-            var openIdx = {'1x': 0, '1NT': 1, '2C': 2, 'Preempt': 3}
-            if (k in openIdx)
-                found = this.selectOpen(openIdx[k]);
+            var found = this.selectOpen(k);
             if (found && found.RetStatus) {
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                 item.style["justify-self"] = "right";
@@ -26,7 +25,7 @@ class BidEx extends Qualifier {
                 let hint = gridElement(this.disp, this.htmlBid(found.Bid), 3, idx)
                 hint.setAttribute('id', "Hint"+idx)
                 hint.style['visibility'] = 'hidden';
-                let ansText = handDescription(this.BridgeBoard.seats[found.Seat]);
+                let ansText = this.handDescription(this.BridgeBoard.seats[found.Seat]);
                 let ans = gridElement(this.disp, ansText, 4, idx);
                 ans.setAttribute("id", "Ans"+idx);
                 ans.style['visibility'] = 'hidden';
@@ -37,14 +36,30 @@ class BidEx extends Qualifier {
         this.disp.addEventListener('click', (e) => {divKeyEvent(e)})
     }
 
-    selectOpen(i) {
+    selectOpen(k) {
+        // Keys are the selection string in index.html
+        var openIdx = {'1x': ['1S', '1H', '1D', '1C'],
+            '1NT': ['1NT'], '2C': ['2C'],
+            'Preempt': ['2S', '2H', '2D', '3C', '3S', '3H', '3D']}
+
+        if (!(k in openIdx))    // what!?!?
+            return null;
+
         var pItem = this.MenuItems[0]['Cases'][0];
         var found = this.findQualifiedBoard(pItem);
-        var choices = [['1S', '1H', '1D', '1C'],
-                    ['1NT'], ['2C'], ['2S', '2H', '2D', '3C', '3S', '3H', '3D']];
-        if (found && found.RetStatus && choices[i].includes(found.Bid))
-            return found;
+        if (found && found.RetStatus && openIdx[k].includes(found.Bid))
+            if ((k != '1NT' && k != '1x') || found.Seat <= 1)
+                return found;
         return null;
+    }
+
+    handDescription(hand) {
+        var str = "HCP: " + hand.HCP.toString();
+        str += ", DP: " + hand.DP.toString();
+        str += ", LTC: " + hand.LTC.toString();
+        if (hand.Balanced)
+            str += ", Balanced"
+        return str;
     }
 
 }
@@ -55,15 +70,3 @@ function bidExamples(eDiv, k) {
     exer.run(k)
 }
 
-function select2C(board) {
-    return 0;
-}
-
-function handDescription(hand) {
-    str = "HCP: " + hand.HCP.toString();
-    str += ", DP: " + hand.DP.toString();
-    str += ", LTC: " + hand.LTC.toString();
-    if (hand.Balanced)
-        str += ", Balanced"
-    return str;
-}

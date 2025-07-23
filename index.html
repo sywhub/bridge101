@@ -59,7 +59,8 @@ divE.appendChild(l)
 let sel = document.createElement('select');
 sel.setAttribute('id', 'SelectExtra');
 divE.appendChild(sel);
-['HCP', 'DP', 'LTC', '1x', '1NT', '2C', 'Preempt'].forEach(s => {
+['HCP', 'DP', 'LTC', 
+    '1x', '1NT', '2C', 'Preempt'].forEach(s => {
     let opt = document.createElement('option');
     opt.setAttribute('value', s);
     opt.innerHTML = s;
