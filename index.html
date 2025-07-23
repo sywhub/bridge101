@@ -60,7 +60,8 @@ let sel = document.createElement('select');
 sel.setAttribute('id', 'SelectExtra');
 divE.appendChild(sel);
 ['HCP', 'DP', 'LTC', 
-    '1x', '1NT', '2C', 'Preempt'].forEach(s => {
+    '1x', '1NT', '2C', 'Preempt',
+    '1M Reply', '1NT Reply', '2C Reply', '1m Reply', 'Preempt Reply'].forEach(s => {
     let opt = document.createElement('option');
     opt.setAttribute('value', s);
     opt.innerHTML = s;

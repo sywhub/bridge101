@@ -3,8 +3,14 @@
  */
 class BidEx extends Qualifier {
     MenuItems = [
-        {'Name': 'Open', 'Cases': [{"BidSeq":[]}]}
-    ];
+        {'Name': 'Open', 'Cases': [{"BidSeq":[]}]},
+        {'Name': '1M Reply', 'Cases': [{"BidSeq":['1S', '-']},{"BidSeq":['1H', '-']}]},
+        {'Name': '1NT Reply', 'Cases': [{"BidSeq":['1NT', '-']}]},
+        {'Name': '2C Reply', 'Cases': [{"BidSeq":['2C', '-']}]},
+        {'Name': '1m Reply', 'Cases': [{"BidSeq":['1D', '-']},{"BidSeq":['1C', '-']}]},
+        {'Name': 'Preempt Reply', 'Cases': [{"BidSeq":['2S', '-']},
+            {"BidSeq":['2H', '-']}, {"BidSeq":['2D', '-']}]}
+        ];
     constructor() {super();}
     init(e) {
         clearContents(e);
@@ -17,7 +23,7 @@ class BidEx extends Qualifier {
         var nExamples = this.nCap;
         var idx = 1;
         while (nExamples > 0) {
-            var found = this.selectOpen(k);
+            var found = this.select(k);
             if (found && found.RetStatus) {
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                 item.style["justify-self"] = "right";
@@ -33,24 +39,40 @@ class BidEx extends Qualifier {
                 ++idx;
             }
         }
-        this.disp.addEventListener('click', (e) => {divKeyEvent(e)})
     }
 
-    selectOpen(k) {
+    select(k) {
         // Keys are the selection string in index.html
         var openIdx = {'1x': ['1S', '1H', '1D', '1C'],
-            '1NT': ['1NT'], '2C': ['2C'],
-            'Preempt': ['2S', '2H', '2D', '3C', '3S', '3H', '3D']}
+            '1NT': ['1NT'], '2C': ['2C'], 'Preempt': ['2S', '2H', '2D', '3C', '3S', '3H', '3D']}
 
-        if (!(k in openIdx))    // what!?!?
-            return null;
+        if (!(k in openIdx)) 
+            return this.selectElse(k);
 
         var pItem = this.MenuItems[0]['Cases'][0];
         var found = this.findQualifiedBoard(pItem);
-        if (found && found.RetStatus && openIdx[k].includes(found.Bid))
-            if ((k != '1NT' && k != '1x') || found.Seat <= 1)
-                return found;
-        return null;
+        if (found && found.RetStatus && openIdx[k].includes(found.Bid)) {
+            // system allows, but we are teaching beginners. don't confuse them.
+            let noNovice = k != '1NT' || this.BridgeBoard.seats[found.Seat].HCP >= 15;
+            noNovice = noNovice && (k != '1x' || this.BridgeBoard.seats[found.Seat].HCP >= 12);
+            noNovice = noNovice && (k != '2C' || this.BridgeBoard.seats[found.Seat].HCP >= 22);
+            if (!noNovice)
+                found = null;
+        } else
+            found = null;
+        return found;
+    }
+
+    selectElse(k) {
+        var found = null;
+        for (const m of this.MenuItems)
+            if (m['Name'] == k) {
+                let pItem = m['Cases'][Math.trunc(Math.random() * m.Cases.length)];
+                found = this.findQualifiedBoard(pItem);
+                if (found && found.RetStatus)
+                    break
+            }
+        return found;
     }
 
     handDescription(hand) {
@@ -69,4 +91,3 @@ function bidExamples(eDiv, k) {
     exer.init(eDiv);
     exer.run(k)
 }
-

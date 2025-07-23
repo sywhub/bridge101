@@ -22,7 +22,6 @@ function ptExamples(eDiv, k, board, funcTbl) {
                 break
         }
     }
-    eDiv.addEventListener('click', (e) => {divKeyEvent(e)})
 }
 
 
