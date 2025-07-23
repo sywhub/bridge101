@@ -14,7 +14,7 @@ class BidEx extends Qualifier {
     constructor() {super();}
     init(e) {
         clearContents(e);
-        e.style['grid-template-columns'] = "3vw 20vw 5vw 50vw";
+        e.style['grid-template-columns'] = "3vw 17vw 8vw 50vw";
         this.nCap = 10;
         this.disp = e;
     }
@@ -28,7 +28,11 @@ class BidEx extends Qualifier {
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                 item.style["justify-self"] = "right";
                 gridElement(this.disp, this.BridgeBoard.seats[found.Seat].toString(), 2, idx);
-                let hint = gridElement(this.disp, this.htmlBid(found.Bid), 3, idx)
+                let hintStr = ''
+                if ('BidSeq' in found)
+                    hintStr = this.seqString(found['BidSeq']) + " "
+                hintStr += this.htmlBid(found.Bid)
+                let hint = gridElement(this.disp, hintStr, 3, idx)
                 hint.setAttribute('id', "Hint"+idx)
                 hint.style['visibility'] = 'hidden';
                 let ansText = this.handDescription(this.BridgeBoard.seats[found.Seat]);
@@ -65,13 +69,18 @@ class BidEx extends Qualifier {
 
     selectElse(k) {
         var found = null;
+        var pItem;
         for (const m of this.MenuItems)
             if (m['Name'] == k) {
-                let pItem = m['Cases'][Math.trunc(Math.random() * m.Cases.length)];
+                pItem = m['Cases'][Math.trunc(Math.random() * m.Cases.length)];
                 found = this.findQualifiedBoard(pItem);
                 if (found && found.RetStatus)
                     break
             }
+        if (found && found.RetStatus)
+            found['BidSeq'] = pItem['BidSeq'];
+        else
+            found = null;
         return found;
     }
 
