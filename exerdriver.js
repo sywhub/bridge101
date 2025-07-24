@@ -10,9 +10,7 @@ function exercies(choice) {
     gridDisp.addEventListener('click', divKeyEvent)
     disp.appendChild(gridDisp)
     var ptDispatch = {'HCP': [hcpSelector, hcpAnswerer, [10, 15, 22]],
-        'DP': [dpSelector, tagAnswerer, [10, 15, 22]],
-        'LTC': [ltcSelector, tagAnswerer, [8, 5, 3]]
-    }
+        'TP': [tpSelector, tagAnswerer, [10, 15, 22]]};
     if (choice.value in ptDispatch) {
         let d = new Deck;
         let board = new Board(d);

@@ -14,7 +14,7 @@ class BidEx extends Qualifier {
     constructor() {super();}
     init(e) {
         clearContents(e);
-        e.style['grid-template-columns'] = "3vw 17vw 8vw 50vw";
+        e.style['grid-template-columns'] = "3em 15em 5em 3vw 20vw";
         this.nCap = 10;
         this.disp = e;
     }
@@ -28,15 +28,15 @@ class BidEx extends Qualifier {
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                 item.style["justify-self"] = "right";
                 gridElement(this.disp, this.BridgeBoard.seats[found.Seat].toString(), 2, idx);
-                let hintStr = ''
                 if ('BidSeq' in found)
-                    hintStr = this.seqString(found['BidSeq']) + " "
-                hintStr += this.htmlBid(found.Bid)
-                let hint = gridElement(this.disp, hintStr, 3, idx)
+                    gridElement(this.disp, this.seqString(found['BidSeq']), 3, idx);
+                else
+                    gridElement(this.disp, '&nbsp;', 3, idx);
+                let hint = gridElement(this.disp, this.htmlBid(found.Bid), 4, idx)
                 hint.setAttribute('id', "Hint"+idx)
                 hint.style['visibility'] = 'hidden';
                 let ansText = this.handDescription(this.BridgeBoard.seats[found.Seat]);
-                let ans = gridElement(this.disp, ansText, 4, idx);
+                let ans = gridElement(this.disp, ansText, 5, idx);
                 ans.setAttribute("id", "Ans"+idx);
                 ans.style['visibility'] = 'hidden';
                 --nExamples;
@@ -85,9 +85,8 @@ class BidEx extends Qualifier {
     }
 
     handDescription(hand) {
-        var str = "HCP: " + hand.HCP.toString();
-        str += ", DP: " + hand.DP.toString();
-        str += ", LTC: " + hand.LTC.toString();
+        var str = "HCP=" + hand.HCP.toString() +
+             ", TP=" + hand.TP.toString();
         if (hand.Balanced)
             str += ", Balanced"
         return str;

@@ -25,9 +25,9 @@ function ptExamples(eDiv, k, board, funcTbl) {
 }
 
 
-function dpSelector(h, k, idx, data) {
+function tpSelector(h, k, idx, data) {
     var ret = hcpSelector(h, k, idx, data);
-    ret = ret && h['HCP'] < (h['DP'] - 4);
+    ret = ret && h['HCP'] < (h['TP'] - 4);
     return ret
 }
 
@@ -43,16 +43,8 @@ function hcpSelector(h, k, idx, data) {
 function hcpAnswerer(h, k, idx, data) { return k + "=" + h[k].toString(); }
 
 function tagAnswerer(h, k, idx, data) {
-    return hcpAnswerer(h, 'HCP', idx, data) + ", " + k + "=" + h[k].toString();
+    var s = hcpAnswerer(h, 'HCP', idx, data);
+    s += ", DP=" + h['DP'].toString(); 
+    s += ", TP=" + h['TP'].toString();
+    return s;
 }
-
-function ltcSelector(h, k, idx, data) {
-    var ret = hcpAnswerer(h, 'HCP', idx, [13, 17, 21])
-    if (ret) {
-        if (idx < data.length - 1)
-            ret = h[k] <= data[idx] && h[k] > data[idx+1];
-        else
-            ret = h[k] <= data[data.length-1];
-    }
-    return ret;
-} 

@@ -40,7 +40,7 @@
 .PointExamples {
     display: grid;
     grid-template-columns: 3vw 20vw 30vw;
-    grid-column-gap: 2vw;
+    grid-column-gap: 1em;
     margin-top: 2vh;
     margin-left: 5vw;
 }
@@ -59,12 +59,18 @@ divE.appendChild(l)
 let sel = document.createElement('select');
 sel.setAttribute('id', 'SelectExtra');
 divE.appendChild(sel);
-['HCP', 'DP', 'LTC', 
-    '1x', '1NT', '2C', 'Preempt',
+['HCP', 'TP', '-',
+    '1x', '1NT', '2C', 'Preempt', '-',
     '1M Reply', '1NT Reply', '2C Reply', '1m Reply', 'Preempt Reply'].forEach(s => {
     let opt = document.createElement('option');
-    opt.setAttribute('value', s);
-    opt.innerHTML = s;
+    if (s == '-') {
+        opt.setAttribute('disabled', '');
+        opt.setAttribute('value', '');
+        opt.innerHTML = '&#x2500;'.repeat(4);
+    } else {
+        opt.setAttribute('value', s);
+        opt.innerHTML = s;
+    }
     sel.appendChild(opt);
 });
 let e = document.createElement('input');
