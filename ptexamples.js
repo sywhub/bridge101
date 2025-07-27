@@ -1,50 +1,77 @@
 /*
  * Simple functions to give hand evaluation exercies
  */
-function ptExamples(eDiv, k, board, funcTbl) {
-    var idx = 1;
-    var nCap = 10;
-    var nExamples = nCap;
-    while (nExamples > 0) {
-        board.deal();
-        for (const h of board.seats) {
-            if (funcTbl[0](h, k, Math.trunc(idx / (nCap / funcTbl[2].length)), funcTbl[2])) {
-                var item = gridElement(eDiv, idx.toString() + ":", 1, idx);
-                item.style["justify-self"] = "right";
-                gridElement(eDiv, h.toString(), 2, idx);
-                var ans = gridElement(eDiv, funcTbl[1](h, k, idx, funcTbl[2]), 3, idx);
-                ans.setAttribute("id", "Ans"+idx);
-                ans.style['visibility'] = 'hidden';
-                --nExamples;
-                ++idx;
+class HCP {
+    constructor() { this.rangeTbl = [10, 15, 22]; }
+
+    selector(h, idx) {
+        var ret = false;
+        if (idx < this.rangeTbl.length - 1)
+            ret = h['HCP'] >= this.rangeTbl[idx] && h['HCP'] < this.rangeTbl[idx+1];
+        else
+            ret = h['HCP'] >= this.rangeTbl[this.rangeTbl.length-1];
+        return ret;
+    }
+
+    answerer(h) { return 'HCP' + "=" + h['HCP'].toString(); }
+}
+
+class TP extends HCP {
+    constructor() { super(); }
+    selector(h, idx) {
+        var ret = super.selector(h, idx);
+        ret = ret && h['HCP'] < (h['TP'] - 4);
+        return ret
+    }
+
+    answerer(h) {
+        var s = super.answerer(h);
+        s += ", DP=" + h['DP'].toString(); 
+        s += ", TP=" + h['TP'].toString();
+        return s;
+    }
+}
+
+class PtEx extends Board {
+    constructor(d, eDiv) {
+        super(d);
+        this.disp = eDiv;
+    }
+    run(k) {
+        var ptObj = null;
+        if (k == 'HCP')
+            ptObj = new HCP();
+        else if (k == 'TP')
+            ptObj = new TP();
+        else
+            return;
+
+        var idx = 1;
+        var nCap = 10;
+        var nExamples = nCap;
+        while (nExamples > 0) {
+            for (const h of this.seats) {
+                if (ptObj.selector(h, Math.trunc(idx / (nCap / ptObj.rangeTbl.length)))) {
+                    var item = gridElement(this.disp, idx.toString() + ":", 1, idx);
+                    item.style["justify-self"] = "right";
+                    gridElement(this.disp, h.toString(), 2, idx);
+                    var ans = gridElement(this.disp, ptObj.answerer(h), 3, idx);
+                    ans.setAttribute("id", "Ans"+idx);
+                    ans.style['visibility'] = 'hidden';
+                    --nExamples;
+                    ++idx;
+                }
+                if (nExamples <= 0)
+                    break
             }
-            if (nExamples <= 0)
-                break
+            this.deal();
         }
     }
 }
 
 
-function tpSelector(h, k, idx, data) {
-    var ret = hcpSelector(h, k, idx, data);
-    ret = ret && h['HCP'] < (h['TP'] - 4);
-    return ret
-}
-
-function hcpSelector(h, k, idx, data) {
-    var ret = false;
-    if (idx < data.length - 1)
-        ret = h[k] >= data[idx] && h[k] < data[idx+1];
-    else
-        ret = h[k] >= data[data.length-1];
-    return ret;
-}
-
-function hcpAnswerer(h, k, idx, data) { return k + "=" + h[k].toString(); }
-
-function tagAnswerer(h, k, idx, data) {
-    var s = hcpAnswerer(h, 'HCP', idx, data);
-    s += ", DP=" + h['DP'].toString(); 
-    s += ", TP=" + h['TP'].toString();
-    return s;
+function ptExamples(eDiv, k) {
+    var deck = new Deck;
+    var ptExm = new PtEx(deck, eDiv);
+    ptExm.run(k);
 }
