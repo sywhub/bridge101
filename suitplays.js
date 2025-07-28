@@ -13,6 +13,14 @@ function splayDispatch(choice) {
 }
 
 class SuitCombination {
+    static PlayLevels = {
+        1: {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [3,6]},
+        2: {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [3,6]},
+        3: {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,5]},
+        4: {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,4]},
+        5: {'Lack': [(10-2), Card.Queen], 'Have': [Card.Ace, Card.King, Card.Jack, (9-2)], 'Dist': [4,4]},
+        6: {'Lack': [Card.King, Card.Queen], 'Have': [Card.Ace, Card.Jack, (10-2), (9-2), (8-2)], 'Dist': [4,4]}
+    }
     constructor(e) {
         this.disp = e;
     }
@@ -20,16 +28,9 @@ class SuitCombination {
         this.Key = Number(k.substring("Level ".length));
     }
     plays() {
-        var levels = {
-            1: {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [3,6]},
-            2: {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [3,5]},
-            3: {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,5]},
-            4: {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,4]}
-        }
-        var declareSide = ['N', 'S', 'Opponents'];
-        if (!(this.Key in levels))
+        if (!(this.Key in SuitCombination.PlayLevels))
             return;
-        var params = levels[this.Key];
+        var params = SuitCombination.PlayLevels[this.Key];
         var declares = [[],[]];
         var cards = []
         for (let i = 0; i < params['Have'].length; ++i) {
@@ -53,15 +54,82 @@ class SuitCombination {
         }
         for (let i = 0; i < params['Lack'].length; ++i)
             cards.push(params['Lack'][i])
+        this.showEx(declares, cards);
+    }
+    
+    preamble(suit, d) {
+        var txt = "If " + this.cardsToString(suit, []) + " is the trump suit. ";
+        txt += 'how many tricks can you achieve with the following hand?<br>'
+        txt += 'You may lead from any direction anytime.'
+        var s = document.createElement('span')
+        s.setAttribute('class', 'PreAmble');
+        s.innerHTML = txt;
+        d.appendChild(s)
+        d.style['margin-top'] = '2vh';
+        d.style['margin-left'] = '10vw';
+        d.style['width'] = '30vw';
+    }
+    showEx(we, they) {
+        var declareSide = ['N', 'S', 'Opponents'];
         var pickSuit = Math.trunc(Math.random()*4)
-        this.disp.insertAdjacentHTML('beforeend', declareSide[0] + ': ' +this.cardsToString(pickSuit,declares[0]));
-        this.disp.insertAdjacentHTML('beforeend', '<br>');
-        this.disp.insertAdjacentHTML('beforeend', declareSide[1] + ': ' +this.cardsToString(pickSuit,declares[1]));
-        this.disp.insertAdjacentHTML('beforeend', '<br>');
-        this.disp.insertAdjacentHTML('beforeend', '<br>');
-        this.disp.insertAdjacentHTML('beforeend', declareSide[2] + ': ' +this.cardsToString(pickSuit,cards));
+        var preambleDiv = document.createElement('div')
+        preambleDiv.setAttribute('class', 'PreAmble')
+        this.preamble(pickSuit, preambleDiv);
+        this.disp.appendChild(preambleDiv);
+        for (let i = 0; i < 2; ++i) {
+            let d = document.createElement('div')
+            d.setAttribute('class', 'DeclareSide')
+            d.style['margin-top'] = '2vh';
+            d.style['margin-left'] = '10vw';
+            d.innerHTML = declareSide[i] + ': ' +this.cardsToString(pickSuit,we[i]);
+            this.disp.appendChild(d)
+        }
+        var allComb = 0;
+        var iComb = [];
+        they.sort((x, y) => {return y - x;});
+        var dropCount = 0;
+        we.forEach(a => { a.forEach(x => { if (x > they[0]) ++dropCount;}); });
+        for (let i = 0; i <= Math.trunc(they.length / 2); ++i) {
+            let drop = 0;
+            if (i > 0 && i <= dropCount)
+                drop += i / they.length;
+            if ((they.length - i) <= dropCount)
+                drop += (they.length - i) / they.length
+            iComb.push([this.nCombination(i, they.length), drop]);
+            allComb += iComb[i][0];
+        }
+        var pDiv = document.createElement('div')
+        pDiv.setAttribute('class', 'OppPerCent')
+        pDiv.style['margin-top'] = '5vh';
+        pDiv.style['margin-left'] = '10vw';
+        pDiv.insertAdjacentHTML('beforeend',"Hint: " + they.length+'-card distributions.<br>');
+        var dropPercent = 0;
+        for (let i = 0; i <= Math.trunc(they.length / 2); ++i) {
+            let s = i + '-' + (they.length - i) + ': ';
+            let iPercent =iComb[i][0] / allComb;
+            dropPercent += iComb[i][1] * iPercent;
+            s += (iPercent * 100).toFixed(2);
+            s += '%<br>';
+            pDiv.insertAdjacentHTML('beforeend',s);
+        }
+        if (dropPercent >= 0.3)
+            pDiv.insertAdjacentHTML('beforeend','Drop Probability=' + (dropPercent*100).toFixed(2) + '%<br>');
+        this.disp.appendChild(pDiv);
     }
 
+    nCombination(i, n) {
+        if (i == 0)
+            return 1
+        if (i == 1)
+            return n;
+        return this.fact(n) / (this.fact(i) * this.fact(n-i));
+    }
+
+    fact(n) {
+        if (n <= 1)
+            return n;
+        return n * this.fact(n-1);
+    }
     cardsToString(s, arr) {
         arr.sort((x, y) => {return y - x;});
         var suits = ['C','D','H','S'];

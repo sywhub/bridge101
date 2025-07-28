@@ -30,8 +30,8 @@ function suitPlays(parentDiv) {
     sel.style['font-size'] = 'inherit';
     parentDiv.appendChild(sel);
     var opts = [];
-    for (let i = 0; i < 20; ++i)
-        opts.push('Level '+(i+1));
+    for (const i of Object.keys(SuitCombination.PlayLevels))
+        opts.push('Level '+ i);
     makeSelect(sel, opts);
     makeBut(parentDiv, sel.id, 'splayDispatch');
 }
@@ -39,7 +39,7 @@ function suitPlays(parentDiv) {
 function makeBut(parentDiv, selid, funcNama) {
     let e = document.createElement('input');
     e.setAttribute('type', 'button');
-    e.setAttribute('value', 'Generate');
+    e.setAttribute('value', 'Show Examples');
     e.setAttribute('onclick', funcNama+ '('+selid+')');
     e.style['font-family'] = 'inherit';
     e.style['font-size'] = 'inherit';
