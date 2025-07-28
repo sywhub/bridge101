@@ -28,6 +28,7 @@
 <script src="exerdriver.js"></script>
 <script src="ptexamples.js"></script>
 <script src="bidexamples.js"></script>
+<script src="suitplays.js"></script>
 <style>
 .ListDisplay {
     clear: both;
@@ -52,34 +53,8 @@
 <div class="ListDisplay" id="ListDisplay"></div>
 <script>
 let divE = document.getElementById('control');
-let l = document.createElement('label');
-l.innerHTML = 'Exerciss on: '
-l.setAttribute('for', 'SelectExtra')
-divE.appendChild(l)
-let sel = document.createElement('select');
-sel.setAttribute('id', 'SelectExtra');
-divE.appendChild(sel);
-['HCP', 'TP', '-',
-    '1x', '1NT', '2C', 'Preempt', '-',
-    '1M Reply', '1NT Reply', '2C Reply', '1m Reply', 'Preempt Reply'].forEach(s => {
-    let opt = document.createElement('option');
-    if (s == '-') {
-        opt.setAttribute('disabled', '');
-        opt.setAttribute('value', '');
-        opt.innerHTML = '&#x2500;'.repeat(4);
-    } else {
-        opt.setAttribute('value', s);
-        opt.innerHTML = s;
-    }
-    sel.appendChild(opt);
-});
-let e = document.createElement('input');
-e.setAttribute('type', 'button');
-e.setAttribute('value', 'Generate');
-e.setAttribute('onclick', 'exercies('+sel.id+')');
-e.style['font-family'] = 'inherit';
-e.style['margin-right'] = '10px';
-divE.appendChild(e)
+bidExercies(divE);
+suitPlays(divE);
 </script>
 </body>
 </html>
