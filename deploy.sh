@@ -1,4 +1,5 @@
 #!/bin/bash
+../refcard2/newdate.sh
 files=`grep 'src=' index.html  | sed -e 's/.*="//' -e 's/".*$//' -e '/refcard2/d'`
 files="index.html ${files}"
 tmp=`mktemp -p . -t ftp`

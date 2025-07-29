@@ -7,6 +7,7 @@
 <meta name="title" content="Bidding Examples & Exercises">
 <title>Bidding Examples & Exercises</title>
 <script>"use strict";</script>
+<script src="deploydate.js"></script>
 <script src="../refcard2/carddeck.js"></script>
 <script src="../refcard2/board.js"></script>
 <script src="../refcard2/tools.js"></script>
@@ -29,7 +30,6 @@
 <script src="ptexamples.js"></script>
 <script src="bidexamples.js"></script>
 <script src="suitplays.js"></script>
-<script src="deploydate.js"></script>
 <style>
 .ListDisplay {
     clear: both;
@@ -48,6 +48,7 @@
 }
 .Control {float:left;}
 .Footer { position: fixed; bottom: 2vh; right: 3vw; }
+@media screen and (max-width: 981px) { body {font-size: 3vw;} } 
 </style>
 </head>
 <body>
@@ -57,7 +58,7 @@
 let divE = document.getElementById('control');
 bidExercies(divE);
 suitPlays(divE);
-showFooter(Card.suitchars(), DeployDate)
+showFooter(Card.suitchars(), config.DisplayDate)
 </script>
 </body>
 </html>
