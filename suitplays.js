@@ -59,7 +59,7 @@ class SuitCombination {
     
     preamble(suit, d) {
         var txt = "If " + this.cardsToString(suit, []) + " is the trump suit. ";
-        txt += 'how many tricks can you achieve with the following hand?<br>'
+        txt += 'how would you play with the following hand?<br>'
         txt += 'You may lead from any direction anytime.'
         var s = document.createElement('span')
         s.setAttribute('class', 'PreAmble');
@@ -113,7 +113,7 @@ class SuitCombination {
             pDiv.insertAdjacentHTML('beforeend',s);
         }
         if (dropPercent >= 0.3)
-            pDiv.insertAdjacentHTML('beforeend','Drop Probability=' + (dropPercent*100).toFixed(2) + '%<br>');
+            pDiv.insertAdjacentHTML('beforeend','Drop Probability: ' + (dropPercent*100).toFixed(2) + '%<br>');
         this.disp.appendChild(pDiv);
     }
 
