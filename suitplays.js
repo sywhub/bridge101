@@ -14,22 +14,25 @@ function splayDispatch(choice) {
 
 class SuitCombination {
     static PlayLevels = {
-        1: {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [3,6]},
-        2: {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [3,6]},
-        3: {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,5]},
-        4: {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,4]},
-        5: {'Lack': [(10-2), Card.Queen], 'Have': [Card.Ace, Card.King, Card.Jack, (9-2)], 'Dist': [4,4]},
-        6: {'Lack': [Card.King, Card.Queen], 'Have': [Card.Ace, Card.Jack, (10-2), (9-2), (8-2)], 'Dist': [4,4]}
+        "Jack 1": {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [3,6]},
+        "Jack 2": {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [3,5]},
+        "Jack 3": {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [4,4]},
+        "Queen 1": {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [3,6]},
+        "Queen 2": {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [3,5]},
+        "Queen 3": {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [4,4]},
+        "Queen 4": {'Lack': [Card.Queen, (10-2)], 'Have': [Card.Ace, Card.King, Card.Jack], 'Dist': [3,4]},
+        "AQ 1": {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,5]},
+        "AQ 2": {'Lack': [Card.Ace, Card.Queen], 'Have': [Card.King, Card.Jack, (10-2)], 'Dist': [4,4]},
+        "4-4 1": {'Lack': [(10-2), Card.Queen], 'Have': [Card.Ace, Card.King, Card.Jack, (9-2)], 'Dist': [4,4]},
+        "4-4 2": {'Lack': [Card.King, Card.Queen], 'Have': [Card.Ace, Card.Jack, (10-2), (9-2), (8-2)], 'Dist': [4,4]}
     }
     constructor(e) {
         this.disp = e;
     }
     init(k) {
-        this.Key = Number(k.substring("Level ".length));
+        this.Key = k;
     }
     plays() {
-        if (!(this.Key in SuitCombination.PlayLevels))
-            return;
         var params = SuitCombination.PlayLevels[this.Key];
         var declares = [[],[]];
         var cards = []
@@ -60,7 +63,6 @@ class SuitCombination {
     preamble(suit, d) {
         var txt = "If " + this.cardsToString(suit, []) + " is the trump suit. ";
         txt += 'how would you play with the following hand?<br>'
-        txt += 'You may lead from any direction anytime.'
         var s = document.createElement('span')
         s.setAttribute('class', 'PreAmble');
         s.innerHTML = txt;

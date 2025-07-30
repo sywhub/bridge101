@@ -30,8 +30,8 @@ function suitPlays(parentDiv) {
     sel.style['font-size'] = 'inherit';
     parentDiv.appendChild(sel);
     var opts = [];
-    for (const i of Object.keys(SuitCombination.PlayLevels))
-        opts.push('Level '+ i);
+    for (const k of Object.keys(SuitCombination.PlayLevels))
+        opts.push(k);
     makeSelect(sel, opts);
     makeBut(parentDiv, sel.id, 'splayDispatch');
 }

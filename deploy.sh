@@ -1,9 +1,9 @@
 #!/bin/bash
 ../refcard2/newdate.sh
-files=`grep 'src=' index.html  | sed -e 's/.*="//' -e 's/".*$//' -e '/refcard2/d'`
+files=` grep 'script src=\"[a-z]' index.html | sed -e 's/.*="//' -e 's/".*$//'`
 files="index.html ${files}"
 tmp=`mktemp -p . -t ftp`
-echo "cd js/ssc_examples" > $tmp
+echo "cd js/`basename $(PWD)`" > $tmp
 echo "rm *" >> $tmp
 for f in ${files}
 do
