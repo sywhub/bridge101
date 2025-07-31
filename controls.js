@@ -1,6 +1,11 @@
 /*
  * Called from index.html to dispatch functionalities
  */
+function topControls(parentDiv) {
+    bidExercies(parentDiv);
+    suitPlays(parentDiv);
+}
+
 function bidExercies(parentDiv) {
     let l = document.createElement('label');
     l.innerHTML = 'Bid Practices: '
@@ -39,7 +44,7 @@ function suitPlays(parentDiv) {
 function makeBut(parentDiv, selid, funcNama) {
     let e = document.createElement('input');
     e.setAttribute('type', 'button');
-    e.setAttribute('value', 'Show Examples');
+    e.setAttribute('value', 'Go');
     e.setAttribute('onclick', funcNama+ '('+selid+')');
     e.style['font-family'] = 'inherit';
     e.style['font-size'] = 'inherit';
