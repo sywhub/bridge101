@@ -51,32 +51,20 @@ class BidEx extends Qualifier {
 
     select(k) {
         var pItem = BidEx.MenuItems[k];
-        var found = null;
-        if ('Expects' in pItem) {
-            found = this.findQualifiedBoard(pItem);
-            if (found && found.RetStatus && pItem['Expects'].includes(found.Bid)) {
-                // system allows, but we are teaching beginners. don't confuse them.
-                let novice = 'Novice' in pItem && this.BridgeBoard.seats[found.Seat].HCP < pItem.Novice;
-                if (novice)
-                    found = null;
-            } else
-                found = null;
-        } else
-            return this.selectReply(k);
-        return found;
-    }
+        if (pItem.length > 1)
+            pItem = pItem[Math.trunc(Math.random() * pItem.length)];
+        var found = this.findQualifiedBoard(pItem);
 
-    selectReply(k) {
-        var found = null;
-        var pItem;
-        if (k in BidEx.MenuItems) {
-            pItem = BidEx.MenuItems[k][Math.trunc(Math.random() * BidEx.MenuItems[k].length)];
-            found = this.findQualifiedBoard(pItem);
-        }
-        if (found && found.RetStatus)
+        if (!found || !found.RetStatus)
+            return null;
+        if ('Expects' in pItem && !pItem['Expects'].includes(found.Bid))
+            return null;
+        if ('Novice' in pItem && this.BridgeBoard.seats[found.Seat].HCP < pItem.Novice)
+            return null;
+
+        if (pItem.BidSeq.length > 0)
             found['BidSeq'] = pItem['BidSeq'];
-        else
-            found = null;
+
         return found;
     }
 
