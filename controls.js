@@ -2,42 +2,16 @@
  * Called from index.html to dispatch functionalities
  */
 function topControls(parentDiv) {
-    bidExercies(parentDiv);
-    suitPlays(parentDiv);
-}
-
-function bidExercies(parentDiv) {
-    let l = document.createElement('label');
-    l.innerHTML = 'Bid Practices: '
-    l.setAttribute('for', 'BidExs')
-    l.style['margin-left'] = "3em";
-    parentDiv.appendChild(l)
-    let sel = document.createElement('select');
-    sel.setAttribute('id', 'BidExs');
-    sel.style['font-family'] = 'inherit';
-    sel.style['font-size'] = 'inherit';
-    parentDiv.appendChild(sel);
-    makeSelect(sel, ['HCP', 'TP', '-',
-        '1x', '1NT', '2C', 'Preempt', '-',
-        '1M Reply', '1NT Reply', '2C Reply', '1m Reply', 'Preempt Reply']);
+    var openOpts = [];
+    for (const k of Object.keys(BidEx.MenuItems))
+        openOpts.push(k);
+    var sel = makeSelect(parentDiv, 'Bid Practices: ', 'BidExs', openOpts)
     makeBut(parentDiv, sel.id, 'exercises');
-}
 
-function suitPlays(parentDiv) {
-    let l = document.createElement('label');
-    l.innerHTML = 'Suit Play: '
-    l.setAttribute('for', 'SuitPlay')
-    l.style['margin-left'] = "3em";
-    parentDiv.appendChild(l)
-    let sel = document.createElement('select');
-    sel.setAttribute('id', 'SuitPlay');
-    sel.style['font-family'] = 'inherit';
-    sel.style['font-size'] = 'inherit';
-    parentDiv.appendChild(sel);
     var opts = [];
     for (const k of Object.keys(SuitCombination.PlayLevels))
         opts.push(k);
-    makeSelect(sel, opts);
+    var sel = makeSelect(parentDiv, 'Suit Play: ', 'SuitPlay', opts);
     makeBut(parentDiv, sel.id, 'splayDispatch');
 }
 
@@ -54,7 +28,17 @@ function makeBut(parentDiv, selid, funcNama) {
 }
 
 
-function makeSelect(sel, optitems) {
+function makeSelect(parentDiv, lTxt, selId, optitems) {
+    var l = document.createElement('label');
+    l.innerHTML = lTxt;
+    l.setAttribute('for', selId)
+    l.style['margin-left'] = "3em";
+    parentDiv.appendChild(l)
+    var sel = document.createElement('select');
+    sel.setAttribute('id', selId);
+    sel.style['font-family'] = 'inherit';
+    sel.style['font-size'] = 'inherit';
+    parentDiv.appendChild(sel);
     optitems.forEach(s => {
         let opt = document.createElement('option');
         opt.style['font-family'] = 'inherit';
@@ -69,6 +53,7 @@ function makeSelect(sel, optitems) {
         }
         sel.appendChild(opt);
     });
+    return sel;
 }
 
 function exercises(choice) {
