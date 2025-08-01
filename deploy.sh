@@ -1,15 +1,18 @@
 #!/bin/bash
 ../refcard2/newdate.sh
-files=` grep 'script src=\"[a-z]' index.html | sed -e 's/.*="//' -e 's/".*$//'`
-files="index.html ${files}"
-tmp=`mktemp -p . -t ftp`
-echo "cd js/`basename $(PWD)`" > $tmp
-echo "rm *" >> $tmp
+files=` grep 'script src=\"' index.html | sed -e 's/.*="//' -e 's/".*$//'`
+tmpindex=`mktemp -p . -t html`
+sed -e 's/src=\"\.\.\/refcard2\//src="/' index.html > $tmpindex
+tmpftp=`mktemp -p . -t ftp`
+echo "cd js/`basename $(PWD)`" > $tmpftp
+echo "rm *" >> $tmpftp
+echo "put $tmpindex index.html" >> $tmpftp
 for f in ${files}
 do
-echo "put $f" >> $tmp
+echo "put $f ." >> $tmpftp
 done
-echo "chmod 0644 *" >> $tmp
-echo "quit" >> $tmp
-sftp -p -b $tmp -N u47659892@ftp.nomadicminds.org 
-rm $tmp
+echo "chmod 0644 *" >> $tmpftp
+echo "quit" >> $tmpftp
+sftp -p -b $tmpftp -N u47659892@ftp.nomadicminds.org 
+rm $tmpindex
+rm $tmpftp
