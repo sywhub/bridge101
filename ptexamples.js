@@ -33,27 +33,27 @@ class TP extends HCP {
 }
 
 class PtEx extends Board {
+    static MenuItems = {'HCP': null, 'TP': null, '-': null};
+
     constructor(d, eDiv) {
         super(d);
         this.disp = eDiv;
         this.nCap = 10;
+        if (PtEx.MenuItems.HCP == null)
+            PtEx.MenuItems.HCP = new HCP();
+        if (PtEx.MenuItems.TP == null)
+            PtEx.MenuItems.TP = new TP();
     }
-    run(k) {
-        var ptObj = null;
-        if (k == 'HCP')
-            ptObj = new HCP();
-        else if (k == 'TP')
-            ptObj = new TP();
-        else
-            return;
 
+    run(k) {
+        var ptObj = PtEx.MenuItems[k];
         var idx = 1;
         var nExamples = this.nCap;
         while (nExamples > 0) {
             for (const h of this.seats) {
                 if (ptObj.selector(h, Math.trunc(idx / (this.nCap / ptObj.rangeTbl.length)))) {
                     var item = gridElement(this.disp, idx.toString() + ":", 1, idx);
-                    item.style["justify-self"] = "right";
+                    item.setAttribute('class', 'Counter');
                     gridElement(this.disp, h.toString(), 2, idx);
                     var ans = gridElement(this.disp, ptObj.answerer(h), 3, idx);
                     ans.setAttribute("id", "Ans"+idx);

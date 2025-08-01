@@ -33,7 +33,7 @@ class BidEx extends Qualifier {
             var found = this.select(pItem);
             if (found && found.RetStatus) {
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
-                item.style["justify-self"] = "right";
+                item.setAttribute('class', 'Counter');
                 gridElement(this.disp, this.BridgeBoard.seats[found.Seat].toString(), 2, idx);
                 if ('BidSeq' in found)
                     gridElement(this.disp, this.seqString(found['BidSeq']), 3, idx);

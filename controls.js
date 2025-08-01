@@ -2,7 +2,9 @@
  * Called from index.html to dispatch functionalities
  */
 function topControls(parentDiv) {
-    var openOpts = ['HCP', 'TP', '-'];
+    var openOpts = [];
+    for (const k of Object.keys(PtEx.MenuItems))
+        openOpts.push(k);
     for (const k of Object.keys(BidEx.MenuItems))
         openOpts.push(k);
     var sel = makeSelect(parentDiv, 'Bid Practices: ', 'BidExs', openOpts)
@@ -20,10 +22,7 @@ function makeBut(parentDiv, selid, funcNama) {
     e.setAttribute('type', 'button');
     e.setAttribute('value', 'Go');
     e.setAttribute('onclick', funcNama+ '('+selid+')');
-    e.style['font-family'] = 'inherit';
-    e.style['font-size'] = 'inherit';
-    e.style['margin-right'] = '10px';
-    e.style['margin-left'] = '10px';
+    e.setAttribute('class', 'GoButton');
     parentDiv.appendChild(e)
 }
 
@@ -36,13 +35,9 @@ function makeSelect(parentDiv, lTxt, selId, optitems) {
     parentDiv.appendChild(l)
     var sel = document.createElement('select');
     sel.setAttribute('id', selId);
-    sel.style['font-family'] = 'inherit';
-    sel.style['font-size'] = 'inherit';
     parentDiv.appendChild(sel);
     optitems.forEach(s => {
         let opt = document.createElement('option');
-        opt.style['font-family'] = 'inherit';
-        opt.style['font-size'] = 'inherit';
         if (s == '-') {
             opt.setAttribute('disabled', '');
             opt.setAttribute('value', '');
