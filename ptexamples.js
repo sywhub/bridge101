@@ -36,6 +36,7 @@ class PtEx extends Board {
     constructor(d, eDiv) {
         super(d);
         this.disp = eDiv;
+        this.nCap = 10;
     }
     run(k) {
         var ptObj = null;
@@ -47,11 +48,10 @@ class PtEx extends Board {
             return;
 
         var idx = 1;
-        var nCap = 10;
-        var nExamples = nCap;
+        var nExamples = this.nCap;
         while (nExamples > 0) {
             for (const h of this.seats) {
-                if (ptObj.selector(h, Math.trunc(idx / (nCap / ptObj.rangeTbl.length)))) {
+                if (ptObj.selector(h, Math.trunc(idx / (this.nCap / ptObj.rangeTbl.length)))) {
                     var item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                     item.style["justify-self"] = "right";
                     gridElement(this.disp, h.toString(), 2, idx);

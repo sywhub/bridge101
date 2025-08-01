@@ -2,7 +2,7 @@
  * Called from index.html to dispatch functionalities
  */
 function topControls(parentDiv) {
-    var openOpts = [];
+    var openOpts = ['HCP', 'TP', '-'];
     for (const k of Object.keys(BidEx.MenuItems))
         openOpts.push(k);
     var sel = makeSelect(parentDiv, 'Bid Practices: ', 'BidExs', openOpts)

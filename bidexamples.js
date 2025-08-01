@@ -28,8 +28,9 @@ class BidEx extends Qualifier {
         var nExamples = this.nCap;
         var idx = 1;
         while (nExamples > 0) {
+            var pItem = this.pickPItem(k, nExamples == this.nCap);
             // workhorse function to pick what/whether to display
-            var found = this.select(k);
+            var found = this.select(pItem);
             if (found && found.RetStatus) {
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                 item.style["justify-self"] = "right";
@@ -51,24 +52,52 @@ class BidEx extends Qualifier {
         }
     }
 
-    // decide whether/what to display
-    select(k) {
+    // Pick one from the mneu and setup the cache to "spread" the bids
+    pickPItem(k, newSpread) {
         var pItem = BidEx.MenuItems[k];
         // if there are multple, pick a random one
-        if (Array.isArray(pItem))
+        if (Array.isArray(pItem)) {
             pItem = pItem[Math.trunc(Math.random() * pItem.length)];
+            newSpread = !('Spreads' in pItem);  // not done yet
+        }
+        if (newSpread)
+            this.newSpread(pItem);
+        return pItem;
+    }
+
+    // reset the bid cache
+    newSpread(pItem) {
+        pItem['Spreads'] = [];
+        if ('Expects' in pItem)
+            pItem.Spreads = [... pItem.Expects]
+        else {
+            this.cacheQualifiers(pItem);
+            for (const q of pItem.Qualifier[pItem.Qualifier.length-1])
+                pItem.Spreads.push(q.Bid)
+        }
+    }
+
+    // decide whether/what to display
+    select(pItem) {
         // pItem must be an object with "BidSeq" key
         var found = this.findQualifiedBoard(pItem);
 
         if (!found || !found.RetStatus)
             return null;
-        if ('Expects' in pItem && !pItem['Expects'].includes(found.Bid))
+        var inSpread = pItem['Spreads'].indexOf(found.Bid)
+        if (inSpread == -1)
             return null;
         if ('Novice' in pItem && this.BridgeBoard.seats[found.Seat].HCP < pItem.Novice)
             return null;
 
         if (pItem.BidSeq.length > 0)
             found['BidSeq'] = pItem['BidSeq'];
+
+        // not to pick the same bid again this round
+        // except when we are all out, then repeat
+        pItem.Spreads.splice(inSpread, 1)
+        if (pItem.Spreads.length <= 0)
+            this.newSpread(pItem);
 
         return found;
     }
@@ -83,6 +112,7 @@ class BidEx extends Qualifier {
 
 }
 
+// onclick function
 function bidExamples(eDiv, k) {
     var exer = new BidEx();
     exer.init(eDiv);
