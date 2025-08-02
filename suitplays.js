@@ -1,4 +1,7 @@
-
+/*
+ * Basic suit combination trainings
+ */
+// Button onclick function
 function splayDispatch(choice) {
     var disp = document.getElementById("ListDisplay")
     clearContents(disp)
@@ -12,6 +15,7 @@ function splayDispatch(choice) {
     sc.plays();
 }
 
+// Simple class for suit combination training
 class SuitCombination {
     static PlayLevels = {
         "Jack 1": {'Lack': [Card.Jack], 'Have': [Card.Ace, Card.King, Card.Queen], 'Dist': [3,6]},
@@ -26,38 +30,44 @@ class SuitCombination {
         "4-4 1": {'Lack': [(10-2), Card.Queen], 'Have': [Card.Ace, Card.King, Card.Jack, (9-2)], 'Dist': [4,4]},
         "4-4 2": {'Lack': [Card.King, Card.Queen], 'Have': [Card.Ace, Card.Jack, (10-2), (9-2), (8-2)], 'Dist': [4,4]}
     }
-    constructor(e) {
-        this.disp = e;
-    }
-    init(k) {
-        this.Key = k;
-    }
+
+    constructor(e) { this.disp = e; }
+    init(k) { this.Key = k; }
+
+    /*
+     * Randomly populate N's and S's hands with what mandated to have.
+     * Then fill up the hand's length with random cards, except for those reserved for oppoenents.
+     */
     plays() {
         var params = SuitCombination.PlayLevels[this.Key];
-        var declares = [[],[]];
-        var cards = []
-        for (let i = 0; i < params['Have'].length; ++i) {
-            let which = Math.trunc(Math.random()*2) 
-            if (declares[which].length >= params[which])
-                which = 1 - which
-            declares[which].push(params['Have'][i])
+        var sides = [[],[],[]]; // hold declarer's side hands
+        var leftover = []
+        
+        // Go through a deck and separate cards into 4 piles
+        // North, South, Opponents, and the rest
+        for (let i = 0; i <= Card.Ace; ++i) {
+            if (params['Lack'].includes(i))
+                sides[2].push(i);
+            else if (params['Have'].includes(i)) {
+                let which = Math.trunc(Math.random()*2);    // N or S 
+                if (sides[which].length >= params.Dist[which])    // full? switch side
+                    which = 1 - which
+                sides[which].push(i);
+            } else
+                leftover.push(i);
         }
-        for (let i = 0; i <= Card.Ace; ++i)
-            if (!(declares[0].includes(i) ||
-                declares[1].includes(i) ||
-                params['Lack'].includes(i)))
-                cards.push(i);
-        for (let j = 0; j < 2; ++j) {
-            let start = declares[j].length;
-            for (let i = start; i < params['Dist'][j]; ++i) {
-                let idx = Math.trunc(Math.random()*cards.length)
-                declares[j].push(cards[idx]);
-                cards.splice(idx, 1);
-            }
+
+        // Now divide up the left amount the previous 3 piles
+        params.Dist.push(13 - params.Dist[0] - params.Dist[1])
+        for (let i of leftover) {
+            let which = Math.trunc(Math.random()*3);
+            if (sides[which].length >= params.Dist[which])    // full? switch side
+                which = (which + 1) % 3;
+            if (sides[which].length >= params.Dist[which])    // full? switch side
+                which = (which + 1) % 3;
+            sides[which].push(i)
         }
-        for (let i = 0; i < params['Lack'].length; ++i)
-            cards.push(params['Lack'][i])
-        this.showEx(declares, cards);
+        this.showEx(sides);
     }
     
     preamble(suit, d) {
@@ -71,49 +81,60 @@ class SuitCombination {
         d.style['margin-left'] = '10vw';
         d.style['width'] = '30vw';
     }
-    showEx(we, they) {
+    
+    // Display cards, compute stats
+    showEx(sides) {
         var declareSide = ['N', 'S', 'Opponents'];
-        var pickSuit = Math.trunc(Math.random()*4)
+        var pickSuit = Math.trunc(Math.random()*4); // pick a random suit
         var preambleDiv = document.createElement('div')
         preambleDiv.setAttribute('class', 'PreAmble')
         this.preamble(pickSuit, preambleDiv);
         this.disp.appendChild(preambleDiv);
-        for (let i = 0; i < 2; ++i) {
+        // display 3 piles: N, S, and opponents
+        for (let i = 0; i < 3; ++i) {
             let d = document.createElement('div')
             d.setAttribute('class', 'DeclareSide')
             d.style['margin-top'] = '2vh';
             d.style['margin-left'] = '10vw';
-            d.innerHTML = declareSide[i] + ': ' +this.cardsToString(pickSuit,we[i]);
+            d.innerHTML = declareSide[i] + ': ' +this.cardsToString(pickSuit, sides[i]);
             this.disp.appendChild(d)
         }
+        
+        // compute probabilities
+        // The distribution and likelihood of dropping the high card
         var allComb = 0;
         var iComb = [];
-        they.sort((x, y) => {return y - x;});
         var dropCount = 0;
-        we.forEach(a => { a.forEach(x => { if (x > they[0]) ++dropCount;}); });
-        for (let i = 0; i <= Math.trunc(they.length / 2); ++i) {
+        // How many cards we have that can be used to drop opponent's high card?
+        for (let i = 0; i < 2; ++i)
+            sides[i].forEach(x => { if (x > sides[2][0]) ++dropCount;});
+
+        // compute distribution and drop probabilty together
+        // Distribution is up to half of the remaining cards
+        for (let i = 0; i <= Math.trunc(sides[2].length / 2); ++i) {
             let drop = 0;
-            if (i > 0 && i <= dropCount)
-                drop += i / they.length;
-            if ((they.length - i) <= dropCount)
-                drop += (they.length - i) / they.length
-            iComb.push([this.nCombination(i, they.length), drop]);
+            if (i > 0 && i <= dropCount)    // we can drop it
+                drop += i / sides[2].length;
+            if ((sides[2].length - i) <= dropCount)
+                drop += (sides[2].length - i) / sides[2].length
+            // C(m,n) formula.  JS should provide natively
+            // drop probability of this specific distribution
+            iComb.push([this.nCombination(i, sides[2].length), drop]);
             allComb += iComb[i][0];
         }
         var pDiv = document.createElement('div')
-        pDiv.setAttribute('class', 'OppPerCent')
-        pDiv.style['margin-top'] = '5vh';
-        pDiv.style['margin-left'] = '10vw';
-        pDiv.insertAdjacentHTML('beforeend',"Hint: " + they.length+'-card distributions.<br>');
+        pDiv.setAttribute('class', 'Notes')
+        pDiv.insertAdjacentHTML('beforeend',"Hint: " + sides[2].length+'-card distributions.<br>');
         var dropPercent = 0;
-        for (let i = 0; i <= Math.trunc(they.length / 2); ++i) {
-            let s = i + '-' + (they.length - i) + ': ';
+        for (let i = 0; i <= Math.trunc(sides[2].length / 2); ++i) {
+            let s = i + '-' + (sides[2].length - i) + ': ';
             let iPercent =iComb[i][0] / allComb;
-            dropPercent += iComb[i][1] * iPercent;
+            dropPercent += iComb[i][1] * iPercent;  // sumproduct of each distribution
             s += (iPercent * 100).toFixed(2);
             s += '%<br>';
             pDiv.insertAdjacentHTML('beforeend',s);
         }
+        // Not interesting to show too low probability
         if (dropPercent >= 0.3)
             pDiv.insertAdjacentHTML('beforeend','Drop Probability: ' + (dropPercent*100).toFixed(2) + '%<br>');
         this.disp.appendChild(pDiv);

@@ -12,6 +12,13 @@ class HCP {
             ret = h['HCP'] >= this.rangeTbl[this.rangeTbl.length-1];
         return ret;
     }
+    addNotes(e) {
+        var d = document.createElement('div')
+        d.setAttribute('class', 'Notes')
+        d.innerHTML = 'HCP: Ace = 4, King = 3, Queen = 2, Jack = 1';
+        e.parentNode.appendChild(d);
+        return d;
+    }
 
     answerer(h) { return 'HCP' + "=" + h['HCP'].toString(); }
 }
@@ -24,6 +31,12 @@ class TP extends HCP {
         return ret
     }
 
+    addNotes(e) {
+        var d = super.addNotes(e);
+        d.insertAdjacentHTML('beforeend','<br>');
+        d.insertAdjacentHTML('beforeend','DP: Void = 5, Singleton = 3, Doubleton = 1, and 1 for each card longer than 4.<br>')
+        d.insertAdjacentHTML('beforeend','TP = HCP + DP');
+    }
     answerer(h) {
         var s = super.answerer(h);
         s += ", DP=" + h['DP'].toString(); 
@@ -66,6 +79,7 @@ class PtEx extends Board {
             }
             this.deal();
         }
+        ptObj.addNotes(this.disp);
     }
 }
 
