@@ -32,9 +32,12 @@ class BidEx extends Qualifier {
             // workhorse function to pick what/whether to display
             var found = this.select(pItem);
             if (found && found.RetStatus) {
+                const seat = this.BridgeBoard.seats[found.Seat];
+                const seatStr = seat.toString();
+                const ansText = this.handDescription(seat);
                 let item = gridElement(this.disp, idx.toString() + ":", 1, idx);
                 item.setAttribute('class', 'Counter');
-                gridElement(this.disp, this.BridgeBoard.seats[found.Seat].toString(), 2, idx);
+                gridElement(this.disp, seatStr, 2, idx);
                 if ('BidSeq' in found)
                     gridElement(this.disp, this.seqString(found['BidSeq']), 3, idx);
                 else
@@ -42,7 +45,6 @@ class BidEx extends Qualifier {
                 let hint = gridElement(this.disp, this.htmlBid(found.Bid), 4, idx)
                 hint.setAttribute('id', "Hint"+idx)
                 hint.style['visibility'] = 'hidden';
-                let ansText = this.handDescription(this.BridgeBoard.seats[found.Seat]);
                 let ans = gridElement(this.disp, ansText, 5, idx);
                 ans.setAttribute("id", "Ans"+idx);
                 ans.style['visibility'] = 'hidden';
@@ -65,15 +67,15 @@ class BidEx extends Qualifier {
         return pItem;
     }
 
-    // reset the bid cache
+    // reset the bid cache using Set for efficiency
     newSpread(pItem) {
-        pItem['Spreads'] = [];
         if ('Expects' in pItem)
-            pItem.Spreads = [... pItem.Expects]
+            pItem.Spreads = new Set(pItem.Expects);
         else {
             this.cacheQualifiers(pItem);
+            pItem.Spreads = new Set();
             for (const q of pItem.Qualifier[pItem.Qualifier.length-1])
-                pItem.Spreads.push(q.Bid)
+                pItem.Spreads.add(q.Bid);
         }
     }
 
@@ -84,8 +86,7 @@ class BidEx extends Qualifier {
 
         if (!found || !found.RetStatus)
             return null;
-        var inSpread = pItem['Spreads'].indexOf(found.Bid)
-        if (inSpread == -1)
+        if (!pItem.Spreads.has(found.Bid))
             return null;
         if ('Novice' in pItem && this.BridgeBoard.seats[found.Seat].HCP < pItem.Novice)
             return null;
@@ -95,8 +96,8 @@ class BidEx extends Qualifier {
 
         // not to pick the same bid again this round
         // except when we are all out, then repeat
-        pItem.Spreads.splice(inSpread, 1)
-        if (pItem.Spreads.length <= 0)
+        pItem.Spreads.delete(found.Bid);
+        if (pItem.Spreads.size <= 0)
             this.newSpread(pItem);
 
         return found;

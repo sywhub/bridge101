@@ -41,31 +41,39 @@ class SuitCombination {
     plays() {
         var params = SuitCombination.PlayLevels[this.Key];
         var sides = [[],[],[]]; // hold declarer's side hands
-        var leftover = []
-        
+        var leftover = [];
+
         // Go through a deck and separate cards into 4 piles
         // North, South, Opponents, and the rest
         for (let i = 0; i <= Card.Ace; ++i) {
-            if (params['Lack'].includes(i))
+            if (params['Lack'].includes(i)) {
                 sides[2].push(i);
-            else if (params['Have'].includes(i)) {
-                let which = Math.trunc(Math.random()*2);    // N or S 
-                if (sides[which].length >= params.Dist[which])    // full? switch side
-                    which = 1 - which
+            } else if (params['Have'].includes(i)) {
+                let which = Math.trunc(Math.random()*2); // N or S
+                if (sides[which].length >= params.Dist[which])
+                    which = 1 - which;
                 sides[which].push(i);
-            } else
+            } else {
                 leftover.push(i);
+            }
         }
 
-        // Now divide up the left amount the previous 3 piles
-        params.Dist.push(13 - params.Dist[0] - params.Dist[1])
-        for (let i of leftover) {
-            let which = Math.trunc(Math.random()*3);
-            if (sides[which].length >= params.Dist[which])    // full? switch side
-                which = (which + 1) % 3;
-            if (sides[which].length >= params.Dist[which])    // full? switch side
-                which = (which + 1) % 3;
-            sides[which].push(i)
+        // Now divide up the leftover among the previous 3 piles using shuffle and direct assignment
+        params.Dist.push(13 - params.Dist[0] - params.Dist[1]);
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+        }
+        shuffle(leftover);
+        let idx = 0;
+        for (let side = 0; side < 3; ++side) {
+            let slots = params.Dist[side] - sides[side].length;
+            if (slots > 0) {
+                sides[side].push(...leftover.slice(idx, idx + slots));
+                idx += slots;
+            }
         }
         this.showEx(sides);
     }
@@ -140,18 +148,15 @@ class SuitCombination {
         this.disp.appendChild(pDiv);
     }
 
-    nCombination(i, n) {
-        if (i == 0)
-            return 1
-        if (i == 1)
-            return n;
-        return this.fact(n) / (this.fact(i) * this.fact(n-i));
-    }
-
-    fact(n) {
-        if (n <= 1)
-            return n;
-        return n * this.fact(n-1);
+    // Direct binomial coefficient for efficiency and clarity
+    nCombination(k, n) {
+        if (k < 0 || k > n) return 0;
+        if (k === 0 || k === n) return 1;
+        let res = 1;
+        for (let i = 1; i <= k; ++i) {
+            res *= (n - i + 1) / i;
+        }
+        return res;
     }
     cardsToString(s, arr) {
         arr.sort((x, y) => {return y - x;});
