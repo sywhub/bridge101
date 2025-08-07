@@ -9,11 +9,11 @@ class BidEx extends Qualifier {
         'Preempt': {"BidSeq":[], 'Expects': ['2S', '2H', '2D', '3C', '3S', '3H', '3D']},
         '-': null,  // divider
         '1M Reply': [{"BidSeq":['1S', '-']},{"BidSeq":['1H', '-']}],
-        '2C Reply': {"BidSeq":['2C', '-']},
         '1m Reply': [{"BidSeq":['1D', '-']},{"BidSeq":['1C', '-']}],
         '1NT Reply': {"BidSeq":['1NT', '-']},
         'Preempt Reply': [{"BidSeq":['2S', '-']},
-            {"BidSeq":['2H', '-']}, {"BidSeq":['2D', '-']}]
+            {"BidSeq":['2H', '-']}, {"BidSeq":['2D', '-']}],
+        '2C Reply': {"BidSeq":['2C', '-']}
     };
     constructor() {super();}
     init(e) {
