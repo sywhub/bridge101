@@ -2,19 +2,28 @@
  * Called from index.html to dispatch functionalities
  */
 function topControls(parentDiv) {
+    parentDiv.innerHTML = '<h2>Bridge Exercises</h2>';
+    parentDiv.insertAdjacentHTML('beforeend',
+        'Select the exercises you want to practice, then click "Go".<br>');
+    parentDiv.insertAdjacentHTML('beforeend',
+        'For "Bid Practices", click on the items in the list to see the answers.');
+    var e= document.createElement('div');
+    e.setAttribute('id', 'TopControls');
+    e.setAttribute('class', 'TopControls');
+    parentDiv.appendChild(e);
     var openOpts = [];
     for (const k of Object.keys(PtEx.MenuItems))
         openOpts.push(k);
     for (const k of Object.keys(BidEx.MenuItems))
         openOpts.push(k);
-    var sel = makeSelect(parentDiv, 'Bid Practices: ', 'BidExs', openOpts)
-    makeBut(parentDiv, sel.id, 'exercises');
+    var sel = makeSelect(e, 'Bid Practices: ', 'BidExs', openOpts)
+    makeBut(e, sel.id, 'exercises');
 
     var opts = [];
     for (const k of Object.keys(SuitCombination.PlayLevels))
         opts.push(k);
-    var sel = makeSelect(parentDiv, 'Suit Play: ', 'SuitPlay', opts);
-    makeBut(parentDiv, sel.id, 'splayDispatch');
+    var sel = makeSelect(e, 'Suit Play: ', 'SuitPlay', opts);
+    makeBut(e, sel.id, 'splayDispatch');
 }
 
 function makeBut(parentDiv, selid, funcNama) {
