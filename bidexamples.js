@@ -18,7 +18,7 @@ class BidEx extends Qualifier {
     constructor() {super();}
     init(e) {
         clearContents(e);
-        e.style['grid-template-columns'] = "3em 15em 5em 3vw 25vw";
+        e.style['grid-template-columns'] = "2vw 30vw 6vw 4vw 35vw";
         this.nCap = 10;
         this.disp = e;
     }

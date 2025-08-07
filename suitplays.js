@@ -81,13 +81,10 @@ class SuitCombination {
     preamble(suit, d) {
         var txt = "If " + this.cardsToString(suit, []) + " is the trump suit. ";
         txt += 'how would you play with the following hand?<br>'
+        txt += 'You may lead from any hand anytime.<br>';
         var s = document.createElement('span')
-        s.setAttribute('class', 'PreAmble');
-        s.innerHTML = txt;
-        d.appendChild(s)
-        d.style['margin-top'] = '2vh';
-        d.style['margin-left'] = '10vw';
-        d.style['width'] = '30vw';
+        d.setAttribute('class', 'PreAmble');
+        d.innerHTML = txt;
     }
     
     // Display cards, compute stats
@@ -99,12 +96,10 @@ class SuitCombination {
         this.preamble(pickSuit, preambleDiv);
         this.disp.appendChild(preambleDiv);
         // display 3 piles: N, S, and opponents
-        for (let i = 0; i < 3; ++i) {
+        for (let i = 0; i < 2; ++i) {
             let d = document.createElement('div')
             d.setAttribute('class', 'DeclareSide')
-            d.style['margin-top'] = '2vh';
-            d.style['margin-left'] = '10vw';
-            d.innerHTML = declareSide[i] + ': ' +this.cardsToString(pickSuit, sides[i]);
+            d.innerHTML = `${declareSide[i]} : ${this.cardsToString(pickSuit, sides[i])}`;
             this.disp.appendChild(d)
         }
         
