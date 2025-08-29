@@ -66,7 +66,6 @@ function exercises(choice) {
     var gridDisp = document.createElement("div");
     gridDisp.setAttribute("id", "PointExamples");
     gridDisp.setAttribute("class", "PointExamples");
-    gridDisp.addEventListener('click', divKeyEvent)
     disp.appendChild(gridDisp);
     if (['HCP', 'TP'].includes(choice.value))
         ptExamples(gridDisp, choice.value);

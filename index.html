@@ -72,6 +72,7 @@ select, input, option, .GoButton {
 <div id="control" class="Control"></div>
 <div class="ListDisplay" id="ListDisplay"></div>
 <script>
+document.getElementById('ListDisplay').addEventListener('click', divKeyEvent)
 let divE = document.getElementById('control');
 topControls(divE);
 showFooter(Card.suitchars(), config.DisplayDate)

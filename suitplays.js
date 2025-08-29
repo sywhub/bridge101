@@ -8,7 +8,6 @@ function splayDispatch(choice) {
     var gridDisp = document.createElement("div");
     gridDisp.setAttribute("id", "SuitPlays");
     gridDisp.setAttribute("class", "SuitPlays");
-    gridDisp.addEventListener('click', divKeyEvent)
     disp.appendChild(gridDisp);
     var sc = new SuitCombination(gridDisp);
     sc.init(choice.value);
