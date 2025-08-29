@@ -1,5 +1,4 @@
 #!/bin/bash
-../refcard2/newdate.sh
 files=` grep 'script src=\"' index.html | sed -e 's/.*="//' -e 's/".*$//'`
 tmpindex=`mktemp -p . -t html`
 sed -e 's/src=\"\.\.\/refcard2\//src="/' index.html > $tmpindex
@@ -16,3 +15,4 @@ echo "quit" >> $tmpftp
 sftp -p -b $tmpftp -N u47659892@ftp.nomadicminds.org 
 rm $tmpindex
 rm $tmpftp
+git push --all origin
