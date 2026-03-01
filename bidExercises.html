@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Sin-Yaw Wang">
+<meta name="description" content="">
+<meta name="title" content="Bidding Examples & Exercises">
+<title>Bidding Examples & Exercises</title>
+<script>"use strict";</script>
+<script src="deploydate.js"></script>
+<script src="../refcard2/carddeck.js"></script>
+<script src="../refcard2/board.js"></script>
+<script src="../refcard2/tools.js"></script>
+<script src="../refcard2/enzh.json"></script>
+<script src="../refcard2/baseSAYC.json"></script>
+<script src="../refcard2/config.js"></script>
+<script>
+    var config = new Settings;
+    config.getConfig();
+</script>
+<script src="../refcard2/qref.js"></script>
+<script src="../refcard2/practices.js"></script>
+<script src="controls.js"></script>
+<script src="bidex.js"></script>
+<style>
+.ListDisplay {
+    clear: both;
+    float: left;
+    margin-top: 1vh;
+    margin-left: 7vw;
+    width: 90vw
+}
+.Label, body {font-family: 'Courier New', Courier, monospace; font-size: 18pt;}
+.TopControls {
+    margin-left:  3vw;
+    margin-top: 2vh;}
+SelectLable {margin-left: 3em;}
+select, input, option, .GoButton {
+    font-family: inherit;
+    font-size: inherit;
+}
+.GoButton {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.Notes {
+    margin-top: 5vh;
+    margin-left: 10vw;
+}
+.PreAmble {
+    margin-top: 2vh;
+    margin-left: 10vw;
+    width: 50vw;
+}
+.DeclareSide {
+    margin-top: 2vh;
+    margin-left: 15vw;
+}
+.Control {float:left; margin-left: 3vw;}
+.Footer { position: fixed; bottom: 2vh; right: 3vw; }
+.Counter {justify-self: right;}
+
+@media screen and (max-width: 981px) { body {font-size: 3vw;} } 
+</style>
+</head>
+<body>
+<div id="control" class="Control"></div>
+<div class="ListDisplay" id="ListDisplay"></div>
+<script>
+document.getElementById('ListDisplay').addEventListener('click', oneExample)
+var divE = document.getElementById('control');
+var exer = null;
+bidExercises(divE);
+showFooter(Card.suitchars(), config.DisplayDate)
+</script>
+</body>
+</html>

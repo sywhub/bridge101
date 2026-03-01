@@ -26,6 +26,24 @@ function topControls(parentDiv) {
     makeBut(e, sel.id, 'splayDispatch');
 }
 
+/*
+ * Called from index.html to dispatch functionalities
+ */
+function bidExercises(parentDiv) {
+    parentDiv.innerHTML = '<h2>Bidding Exercises</h2>';
+    parentDiv.insertAdjacentHTML('beforeend',
+        'Select the exercises you want to practice, then click "Go".<br>');
+    var e= document.createElement('div');
+    e.setAttribute('id', 'TopControls');
+    e.setAttribute('class', 'TopControls');
+    parentDiv.appendChild(e);
+    var openOpts = [];
+    for (const k of Object.keys(BidExer.MenuItems))
+        openOpts.push(k);
+    var sel = makeSelect(e, 'Bid Practices: ', 'BidExs', openOpts)
+    makeBut(e, sel.id, 'BidExercises');
+}
+
 function makeBut(parentDiv, selid, funcNama) {
     let e = document.createElement('input');
     e.setAttribute('type', 'button');
@@ -38,9 +56,9 @@ function makeBut(parentDiv, selid, funcNama) {
 
 function makeSelect(parentDiv, lTxt, selId, optitems) {
     var l = document.createElement('label');
+    l.setAttribute('class', 'SelectLable');
     l.innerHTML = lTxt;
     l.setAttribute('for', selId)
-    l.style['margin-left'] = "3em";
     parentDiv.appendChild(l)
     var sel = document.createElement('select');
     sel.setAttribute('id', selId);
